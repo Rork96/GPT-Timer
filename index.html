@@ -136,6 +136,7 @@
       </select>
       <span style="font-size: 1.5rem;">min</span>
     </div>
+    <button onclick="enableSound()">🎵 Enable Sound</button>
     <button id="beginWorkout">Start Workout</button>
     <div id="historyBox" style="margin-top: 2rem; font-size: 0.9rem;"></div>
     <button onclick="localStorage.removeItem('tempoHistory'); location.reload();" style="margin-top: 10px;">🗑️ Clear History</button>
@@ -215,6 +216,10 @@
       sessionStartTime = Date.now();
       startTimers();
       workoutStart = performance.now();
+      document.getElementById('beep').play().then(() => {
+        document.getElementById('beep').pause();
+        document.getElementById('beep').currentTime = 0;
+      });
     }
 
     const workoutDisplay = document.getElementById("workoutTime");
@@ -326,6 +331,14 @@
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js');
+    }
+    function enableSound() {
+      const beep = document.getElementById('beep');
+      beep.play().then(() => {
+        beep.pause();
+        beep.currentTime = 0;
+        alert("Sound ready! ✅");
+      });
     }
   </script>
 </body>
