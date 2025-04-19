@@ -1,0 +1,110 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen;
+  background: #f4f4f4;
+  margin: 0;
+  padding: 2rem;
+  color: #333;
+  text-align: center;
+}
+
+.screen {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  max-width: 400px;
+  margin: auto;
+  margin-top: 4vh;
+}
+
+.screen.active {
+  display: flex;
+}
+
+.stat {
+  font-size: 1.5rem;
+  margin: 1rem 0;
+  color: #333;
+}
+
+button {
+  padding: 1rem 2rem;
+  margin: 0.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  background: #4CAF50;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #45a049;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+input[type=number] {
+  width: 60px;
+  padding: 0.5rem;
+  font-size: 1rem;
+  margin: 0 0.25rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.setup-controls input {
+  width: 80px;
+  padding: 0.5rem;
+  font-size: 1rem;
+  margin: 0.5rem;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.workout-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.workout-controls button {
+  width: 100%;
+}
+
+#message {
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #ff3d00;
+}
+
+.blink {
+    animation: blink-animation 1s steps(5, start) infinite;
+  }
+  
+  @keyframes blink-animation {
+    to {
+      visibility: hidden;
+    }
+  }
+
+/* Responsive */
+@media (max-width: 500px) {
+  body {
+    padding: 1rem;
+  }
+  button {
+    width: 100%;
+  }
+  input[type=number] {
+    width: 100%;
+    margin: 0.25rem 0;
+  }
+}

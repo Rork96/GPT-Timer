@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#4CAF50" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/png" href="icon.png" />
+  <title>TempoFit</title>
+  <style>
+    body {
+      background: #111;
+      color: white;
+    }
+    .screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      background: #1c1c1e;
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      max-width: 400px;
+      margin: auto;
+    }
+    .screen.active { display: flex; }
+    #splashScreen h1 {
+      font-size: 2.5rem;
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.8; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    #resumeAfterRest {
+      background-color: #007AFF;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      border-radius: 12px;
+      padding: 0.75rem 2rem;
+      margin-top: 1rem;
+      transition: background-color 0.3s;
+    }
+    #resumeAfterRest:hover {
+      background-color: #005FCC;
+    }
+    select {
+      background: #2c2c2e;
+      color: white;
+      border: none;
+      appearance: none;
+      text-align: center;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
+    }
+    #restCircle {
+      transition: stroke-dashoffset 0.5s linear;
+    }
+    #workoutTime {
+      font-family: 'Courier New', Courier, monospace;
+      letter-spacing: 1px;
+      font-size: 3rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+    #summaryScreen button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 0.75rem 2rem;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="splashScreen" class="screen active">
+    <h1>🔥 TempoFit</h1>
+    <p>Loading your perfect workout experience...</p>
+  </div>
+
+  <div id="setupScreen" class="screen">
+    <h1>TempoFit</h1>
+    <p>Select Rest Time</p>
+    <div style="display: flex; justify-content: center; gap: 10px;">
+      <select id="customRestMin" style="font-size: 1.5rem; padding: 0.5rem; border-radius: 12px;">
+        <option value="0">00</option>
+        <option value="1">01</option>
+        <option value="2">02</option>
+        <option value="3">03</option>
+        <option value="4">04</option>
+        <option value="5">05</option>
+        <option value="6">06</option>
+        <option value="7">07</option>
+        <option value="8">08</option>
+        <option value="9">09</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+      </select>
+      <span style="font-size: 1.5rem;">:</span>
+      <select id="customRestSec" style="font-size: 1.5rem; padding: 0.5rem; border-radius: 12px;">
+        <option value="0">00</option>
+        <option value="5">05</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+        <option value="25">25</option>
+        <option value="30">30</option>
+        <option value="35">35</option>
+        <option value="40">40</option>
+        <option value="45">45</option>
+        <option value="50">50</option>
+        <option value="55">55</option>
+      </select>
+    </div>
+    <p>Workout Goal</p>
+    <div style="display: flex; justify-content: center; gap: 10px;">
+      <select id="customGoalMin" style="font-size: 1.5rem; padding: 0.5rem; border-radius: 12px;">
+        <option value="5">05</option>
+        <option value="10" selected>10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+        <option value="25">25</option>
+        <option value="30">30</option>
+      </select>
+      <span style="font-size: 1.5rem;">min</span>
+    </div>
+    <button id="beginWorkout">Start Workout</button>
+    <div id="historyBox" style="margin-top: 2rem; font-size: 0.9rem;"></div>
+    <button onclick="localStorage.removeItem('tempoHistory'); location.reload();" style="margin-top: 10px;">🗑️ Clear History</button>
+  </div>
+
+  <div id="workoutScreen" class="screen">
+    <h1>Workout Timer</h1>
+    <div class="timers">
+      <div id="workoutTime">00:00.00</div>
+      <div>Rest Time: <span id="restTime">00:00</span></div>
+      <div style="margin: 1rem 0;">
+        <svg id="restCircleSvg" width="100" height="100" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="44" stroke="#eee" stroke-width="10" fill="none"/>
+          <circle id="restCircle" cx="50" cy="50" r="44" stroke="#4CAF50" stroke-width="10" fill="none"
+            stroke-linecap="round"
+            stroke-dasharray="276.46"
+            stroke-dashoffset="276.46"
+            transform="rotate(-90 50 50)"
+          />
+        </svg>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="pauseWorkout">Pause</button>
+      <button id="startRest">Rest</button>
+      <button id="resumeAfterRest" style="display:none">Resume Workout</button>
+      <button id="finishWorkout">Finish</button>
+    </div>
+
+    <div style="font-size: 0.9rem; margin-top: 1rem;">Total Session Time: <span id="totalTime">00:00</span></div>
+  </div>
+
+  <div id="summaryScreen" class="screen">
+    <h1>Workout Summary</h1>
+    <div id="summaryData" style="margin: 1rem 0; font-size: 1.2rem;"></div>
+    <div id="historyList" style="font-size: 0.9rem; margin-top: 1rem;"></div>
+    <button onclick="location.reload()">Start New Session</button>
+  </div>
+
+  <audio id="beep" src="beep.mp3" preload="auto"></audio>
+  <script>
+    let restStartTime;
+    let restDuration = 0;
+    let workoutTime = 0;
+    let restTime = 0;
+    let paused = false;
+    let isResting = false;
+    let waitingForResume = false;
+    let workoutInterval;
+    let sessionInterval;
+    let sessionStartTime;
+    let restInterval;
+    let workoutStart;
+    let workoutElapsed = 0;
+    let currentRestRemaining = 0;
+
+    const setupScreen = document.getElementById('setupScreen');
+    const workoutScreen = document.getElementById('workoutScreen');
+
+    setTimeout(() => {
+      document.getElementById('splashScreen').classList.remove('active');
+      document.getElementById('setupScreen').classList.add('active');
+      const hist = JSON.parse(localStorage.getItem('tempoHistory') || '[]');
+      const html = hist.map(h => `<div>📅 ${new Date(h.date).toLocaleString()}<br>🏋️ ${h.workout} | 💤 ${h.rest} | ⏱ ${h.total}</div><hr>`).join('');
+      document.getElementById('historyBox').innerHTML = `<h3>History</h3>${html || 'No sessions yet'}`;
+    }, 2000);
+
+    document.getElementById('beginWorkout').onclick = () => {
+      const min = parseInt(document.getElementById('customRestMin').value) || 0;
+      const sec = parseInt(document.getElementById('customRestSec').value) || 0;
+      restDuration = min * 60 + sec;
+      if (restDuration <= 0) return alert("Set rest duration");
+
+      setupScreen.classList.remove('active');
+      workoutScreen.classList.add('active');
+      sessionStartTime = Date.now();
+      startTimers();
+      workoutStart = performance.now();
+    }
+
+    const workoutDisplay = document.getElementById("workoutTime");
+
+    function updateHighPrecisionTimer() {
+      if (!paused && !isResting && !waitingForResume) {
+        const now = performance.now();
+        workoutElapsed = now - workoutStart;
+      }
+      const totalSeconds = Math.floor(workoutElapsed / 1000);
+      const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+      const seconds = String(totalSeconds % 60).padStart(2, '0');
+      const milliseconds = String(Math.floor((workoutElapsed % 1000) / 10)).padStart(2, '0');
+      workoutDisplay.textContent = `${minutes}:${seconds}.${milliseconds}`;
+      workoutTime = totalSeconds;
+      requestAnimationFrame(updateHighPrecisionTimer);
+    }
+    updateHighPrecisionTimer();
+
+    function startTimers() {
+      sessionInterval = setInterval(() => {
+        const seconds = Math.floor((Date.now() - sessionStartTime) / 1000);
+        updateDisplay("totalTime", seconds);
+      }, 1000);
+    }
+
+    document.getElementById('pauseWorkout').onclick = () => {
+      paused = !paused;
+      document.getElementById('pauseWorkout').textContent = paused ? 'Resume' : 'Pause';
+      if (!paused) {
+        workoutStart = performance.now() - workoutElapsed;
+      }
+    }
+
+    document.getElementById('startRest').onclick = () => {
+      if (!restDuration || isResting) return;
+      isResting = true;
+      waitingForResume = true;
+      restStartTime = Date.now();
+      let restCompleted = false;
+      const restCirc = 2 * Math.PI * 44;
+
+      function updateRest() {
+        const now = Date.now();
+        const elapsed = Math.floor((now - restStartTime) / 1000);
+        restTime = elapsed;
+        updateDisplay("restTime", restTime);
+
+        const progress = Math.min(elapsed / restDuration, 1);
+        const offset = restCirc - progress * restCirc;
+        document.getElementById('restCircle').style.strokeDashoffset = offset;
+
+        if (!restCompleted && progress >= 1) {
+          restCompleted = true;
+          document.getElementById('beep').play();
+          document.getElementById('resumeAfterRest').style.display = 'inline-block';
+          document.getElementById('resumeAfterRest').classList.add('blink');
+        }
+
+        if (isResting) {
+          requestAnimationFrame(updateRest);
+        }
+      }
+
+      updateRest();
+    };
+
+    document.getElementById('resumeAfterRest').onclick = () => {
+      workoutStart = performance.now() - workoutTime * 1000;
+      waitingForResume = false;
+      isResting = false;
+      document.getElementById('resumeAfterRest').style.display = 'none';
+      document.getElementById('resumeAfterRest').classList.remove('blink');
+      document.getElementById('restCircle').style.strokeDashoffset = 276.46;
+    }
+
+    document.getElementById('finishWorkout').onclick = () => {
+      const history = JSON.parse(localStorage.getItem('tempoHistory') || '[]');
+      history.unshift({
+        date: new Date().toISOString(),
+        workout: document.getElementById('workoutTime').textContent,
+        rest: document.getElementById('restTime').textContent,
+        total: document.getElementById('totalTime').textContent
+      });
+      localStorage.setItem('tempoHistory', JSON.stringify(history.slice(0, 10)));
+      
+      document.getElementById('workoutScreen').classList.remove('active');
+      document.getElementById('summaryScreen').classList.add('active');
+      clearInterval(sessionInterval);
+      const summaryEl = document.getElementById('summaryData');
+      summaryEl.innerHTML = `
+  <div style="padding: 1rem; border-radius: 12px; background: #2c2c2e; box-shadow: 0 0 10px rgba(0,0,0,0.3); text-align: left;">
+    <h2 style="margin-bottom: 0.5rem;">🏁 Workout Completed!</h2>
+    <p><strong>🏋️ Workout Time:</strong> ${document.getElementById('workoutTime').textContent}</p>
+    <p><strong>💤 Rest Time:</strong> ${document.getElementById('restTime').textContent}</p>
+    <p><strong>⏱ Total Session:</strong> ${document.getElementById('totalTime').textContent}</p>
+    <p style="margin-top: 1rem;">🔥 Keep going! Share your gains!</p>
+  </div>
+`;
+      const historyHTML = history.map(h => `<div>📅 ${new Date(h.date).toLocaleString()}<br>Workout: ${h.workout} | Rest: ${h.rest} | Total: ${h.total}</div><hr>`).join('');
+      document.getElementById('historyList').innerHTML = `<h3>History</h3>${historyHTML}`;
+    };
+
+    function updateDisplay(id, timeInSec) {
+      const min = String(Math.floor(timeInSec / 60)).padStart(2, '0');
+      const sec = String(timeInSec % 60).padStart(2, '0');
+      document.getElementById(id).textContent = `${min}:${sec}`;
+    }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
+</body>
+</html>

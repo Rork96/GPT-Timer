@@ -1,0 +1,23 @@
+{
+    "name": "TempoFit",
+    "short_name": "TempoFit",
+    "start_url": "./index.html",
+    "scope": "./",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#ffffff",
+    "theme_color": "#4CAF50",
+    "description": "A clean and modern workout timer that tracks workout, rest, and session stats.",
+    "icons": [
+      {
+        "src": "icon.png",
+        "type": "image/png",
+        "sizes": "192x192"
+      },
+      {
+        "src": "icon-512.png",
+        "type": "image/png",
+        "sizes": "512x512"
+      }
+    ]
+}
