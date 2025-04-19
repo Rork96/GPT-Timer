@@ -2,6 +2,7 @@ let workoutStartTime, sessionStartTime;
 let workoutInterval, sessionInterval, restInterval;
 let paused = false, workoutTime = 0, restTime = 0;
 let isResting = false;
+let restDuration = 0;
 
 const workoutTimeEl = document.getElementById('workoutTime');
 const restTimeEl = document.getElementById('restTime');
@@ -9,24 +10,11 @@ const totalTimeEl = document.getElementById('totalTime');
 const messageEl = document.getElementById('message');
 const beep = document.getElementById('beep');
 
-const startWorkoutBtn = document.getElementById('startWorkout');
 const pauseWorkoutBtn = document.getElementById('pauseWorkout');
 const resumeAfterRestBtn = document.getElementById('resumeAfterRest');
 const finishWorkoutBtn = document.getElementById('finishWorkout');
 const startRestBtn = document.getElementById('startRest');
-
-startWorkoutBtn.addEventListener('click', () => {
-  if (!sessionStartTime) sessionStartTime = Date.now();
-  if (!workoutStartTime) workoutStartTime = Date.now();
-
-  if (!sessionInterval) sessionInterval = setInterval(updateSessionTime, 1000);
-  if (!workoutInterval) workoutInterval = setInterval(() => {
-    if (!paused && !isResting) {
-      workoutTime++;
-      updateTimeDisplay(workoutTimeEl, workoutTime);
-    }
-  }, 1000);
-});
+const clickSound = document.getElementById('clickSound');
 
 pauseWorkoutBtn.addEventListener('click', () => {
   paused = !paused;
@@ -34,6 +22,10 @@ pauseWorkoutBtn.addEventListener('click', () => {
 });
 
 resumeAfterRestBtn.addEventListener('click', () => {
+  if (clickSound) {
+    clickSound.currentTime = 0;
+    clickSound.play();
+  }
   isResting = false;
   resumeAfterRestBtn.style.display = 'none';
   messageEl.textContent = '';
@@ -48,27 +40,51 @@ finishWorkoutBtn.addEventListener('click', () => {
 });
 
 startRestBtn.addEventListener('click', () => {
-  const min = parseInt(document.getElementById('restMin').value) || 0;
-  const sec = parseInt(document.getElementById('restSec').value) || 0;
-  const totalSec = min * 60 + sec;
+  const clickSound = document.getElementById("clickSound");
+  if (clickSound) {
+    clickSound.currentTime = 0;
+    clickSound.play();
+  }
 
+  const totalSec = restDuration;
   if (totalSec <= 0) return;
 
   let remaining = totalSec;
+  document.getElementById('restCircle').style.strokeDashoffset = 502;
+  document.getElementById('restTimeDisplay').innerText =
+    `${String(Math.floor(totalSec / 60)).padStart(2, '0')}:${String(totalSec % 60).padStart(2, '0')}`;
+
   isResting = true;
-  messageEl.textContent = `Resting: ${min}m ${sec}s`;
+  messageEl.textContent = `Resting...`;
 
   restInterval = setInterval(() => {
+    const offset = 502 * (remaining / totalSec);
+    document.getElementById('restCircle').style.strokeDashoffset = offset;
+    document.getElementById('restTimeDisplay').innerText =
+      `${String(Math.floor(remaining / 60)).padStart(2, '0')}:${String(remaining % 60).padStart(2, '0')}`;
+
     if (--remaining <= 0) {
       clearInterval(restInterval);
       restTime += totalSec;
       updateTimeDisplay(restTimeEl, restTime);
-      beep.play();
+
       messageEl.textContent = "Break is over — press Resume Workout!";
+      document.body.classList.add('shake');
+      setTimeout(() => document.body.classList.remove('shake'), 600);
       resumeAfterRestBtn.style.display = 'inline-block';
       resumeAfterRestBtn.classList.add('blink');
+
+      let repeatCount = 0;
+      const repeatBeep = () => {
+        if (!isResting || repeatCount >= 10) return;
+        beep.currentTime = 0;
+        beep.play();
+        repeatCount++;
+        setTimeout(repeatBeep, 3000);
+      };
+      repeatBeep();
     } else {
-      messageEl.textContent = `Resting: ${Math.floor(remaining / 60)}m ${remaining % 60}s`;
+      messageEl.textContent = `Resting...`;
     }
   }, 1000);
 });

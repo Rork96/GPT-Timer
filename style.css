@@ -1,110 +1,118 @@
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen;
-  background: #f4f4f4;
-  margin: 0;
-  padding: 2rem;
-  color: #333;
-  text-align: center;
-}
-
-.screen {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: white;
-  padding: 2rem;
-  border-radius: 20px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-  max-width: 400px;
-  margin: auto;
-  margin-top: 4vh;
-}
-
-.screen.active {
-  display: flex;
-}
-
-.stat {
-  font-size: 1.5rem;
-  margin: 1rem 0;
-  color: #333;
-}
-
-button {
-  padding: 1rem 2rem;
-  margin: 0.5rem;
-  font-size: 1rem;
-  border: none;
-  border-radius: 10px;
-  background: #4CAF50;
-  color: white;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-button:hover {
-  background: #45a049;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-input[type=number] {
-  width: 60px;
-  padding: 0.5rem;
-  font-size: 1rem;
-  margin: 0 0.25rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-.setup-controls input {
-  width: 80px;
-  padding: 0.5rem;
-  font-size: 1rem;
-  margin: 0.5rem;
-  text-align: center;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-}
-
-.workout-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.workout-controls button {
-  width: 100%;
-}
-
-#message {
-  margin-top: 1.5rem;
-  font-size: 1rem;
-  font-weight: 500;
-  color: #ff3d00;
-}
-
-.blink {
-    animation: blink-animation 1s steps(5, start) infinite;
-  }
-  
-  @keyframes blink-animation {
-    to {
-      visibility: hidden;
+<style>
+    body {
+      background: linear-gradient(to bottom right, #0f0f0f, #1c1c1e);
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 2rem;
+      text-align: center;
     }
-  }
+    .screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      max-width: 420px;
+      margin: auto;
+      border-radius: 20px;
+      background: rgba(28,28,30,0.9);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      backdrop-filter: blur(10px);
+      animation: fadeIn 0.5s ease;
+    }
+    .screen.active { display: flex; }
+    #splashScreen h1 {
+      font-size: 3rem;
+      animation: neonPulse 1.5s infinite;
+      color: #00ffd5;
+      text-shadow: 0 0 5px #00ffd5, 0 0 10px #00ffd5;
+    }
+    @keyframes neonPulse {
+      0% { text-shadow: 0 0 5px #00ffd5; opacity: 1; }
+      50% { text-shadow: 0 0 20px #00ffd5; opacity: 0.7; }
+      100% { text-shadow: 0 0 5px #00ffd5; opacity: 1; }
+    }
+    #resumeAfterRest {
+      background: linear-gradient(to right, #00ffc8, #008fff);
+      color: black;
+      font-weight: bold;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 20px;
+      padding: 0.8rem 2.5rem;
+      margin-top: 1rem;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(0,255,200,0.4);
+      transition: transform 0.2s ease;
+    }
+    #resumeAfterRest:hover {
+      transform: scale(1.05);
+    }
+    select {
+      background: #2a2a2e;
+      color: white;
+      border: none;
+      font-size: 1.5rem;
+      border-radius: 12px;
+      padding: 0.5rem;
+      box-shadow: inset 0 0 5px rgba(0,255,200,0.1);
+    }
+    #restCircle {
+      transition: stroke-dashoffset 0.3s ease;
+    }
+    #workoutTime {
+      font-family: 'Courier New', monospace;
+      font-size: 3.2rem;
+      font-weight: bold;
+      color: #00ffd5;
+      text-shadow: 0 0 3px #00ffd5;
+      margin-bottom: 1rem;
+    }
+    #summaryScreen button {
+      background: #00ffc8;
+      color: #000;
+      padding: 0.8rem 2rem;
+      border: none;
+      border-radius: 16px;
+      font-size: 1rem;
+      font-weight: bold;
+      box-shadow: 0 0 8px rgba(0,255,200,0.4);
+      margin-top: 1rem;
+      cursor: pointer;
+    }
+    /* New primary button styles */
+    button {
+      width: 100%;
+      max-width: 320px;
+      height: 64px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-radius: 32px;
+      border: none;
+      margin: 0.75rem 0;
+      background: linear-gradient(to right, #00ffc8, #00aaff);
+      color: black;
+      box-shadow: 0 6px 12px rgba(0, 255, 200, 0.3);
+      transition: all 0.15s ease-in-out;
+    }
+    button:active {
+      transform: scale(0.96);
+      box-shadow: 0 3px 6px rgba(0, 255, 200, 0.2);
+    }
 
-/* Responsive */
-@media (max-width: 500px) {
-  body {
-    padding: 1rem;
-  }
-  button {
-    width: 100%;
-  }
-  input[type=number] {
-    width: 100%;
-    margin: 0.25rem 0;
-  }
-}
+    /* Special style for Rest button */
+    button.rest-btn {
+      background: linear-gradient(to right, #34e89e, #0f3443);
+      color: white;
+    }
+
+    /* Container for vertical button group */
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+  </style>
